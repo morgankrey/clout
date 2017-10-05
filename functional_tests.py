@@ -13,6 +13,9 @@ class NewVisitorTest(unittest.TestCase):
 		self.browser.get('http://localhost:8000')
 
 		self.assertIn('Podcastery', self.browser.title)
+		header_text = self.browser.find_element_by_tag_name('h1').text
+		self.assertIn('Podcastery', header_text)
+
 		self.fail('Finish the test!')
 
 if __name__=='__main__':
