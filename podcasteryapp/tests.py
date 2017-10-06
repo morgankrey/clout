@@ -11,6 +11,11 @@ class HomePageTest(TestCase):
 
 	def test_can_save_post_request(self):
 		response = self.client.post('/', data={'read_text': 'New read'})
+
+		self.assertEqual(Read.objects.count(), 1)
+		new_read = Read.objects.first()
+		self.assertEqual(new_read.text, 'New read')
+		
 		self.assertIn('New read', response.content.decode())
 		self.assertTemplateUsed(response, 'home.html')
 
