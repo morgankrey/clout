@@ -15,9 +15,24 @@ class HomePageTest(TestCase):
 		self.assertEqual(Read.objects.count(), 1)
 		new_read = Read.objects.first()
 		self.assertEqual(new_read.text, 'New read')
-		
-		self.assertIn('New read', response.content.decode())
-		self.assertTemplateUsed(response, 'home.html')
+
+	def test_redirects_after_POST(self):
+		response = self.client.post('/', data={'read_text': 'New read'})		
+		self.assertEqual(response.status_code, 302)
+		self.assertEqual(response['location'], '/')
+
+	def test_only_save_reads_when_necessary(self):
+		self.client.get('/')
+		self.assertEqual(Read.objects.count(), 0)
+
+	def test_displays_all_reads(self):
+		Read.objects.create(text='read 1')
+		Read.objects.create(text='read 2')
+
+		response = self.client.get('/')
+
+		self.assertIn('read 1', response.content.decode())
+		self.assertIn('read 2', response.content.decode())
 
 class ReadModelTest(TestCase):
 	def test_saving_and_retrieving_reads(self):
