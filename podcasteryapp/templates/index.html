@@ -1,0 +1,9 @@
+{% if latest_read_list %}
+    <ul>
+    {% for read in latest_read_list %}
+        <li><a href="/reads/{{ read.id }}/">{{ read.text }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No reads are available.</p>
+{% endif %}
