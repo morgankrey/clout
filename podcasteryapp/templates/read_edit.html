@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>New read</h1>
+    <form method="POST" class="read-form">
+    	{% csrf_token %}
+        {{ form.as_p }}
+        <a href="/" class="save btn btn-default">Home</a>
+        <button type="submit" class="save btn btn-default">Save</button>
+    </form>
+{% endblock %}

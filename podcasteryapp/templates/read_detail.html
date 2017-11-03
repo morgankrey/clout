@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{{ read }}
+<a class="btn btn-default" href="{% url 'read_edit' read_id=read.pk %}">Edit</a>
+
+{% endblock %}
