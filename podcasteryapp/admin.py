@@ -2,7 +2,30 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from podcasteryapp.models import Slot, Read, Show, Episode
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
+
+from podcasteryapp.models import Slot, Read, Show, Episode, Profile
+
+class ProfileInline(admin.StackedInline):
+    model = Profile
+    can_delete = False
+    verbose_name_plural = 'Profile'
+    fk_name = 'user'
+
+class CustomUserAdmin(UserAdmin):
+    inlines = (ProfileInline, )
+    list_display = ('username', 'email', 'get_address')
+    list_select_related = ('profile', )
+
+    def get_address(self, instance):
+        return instance.profile.address
+    get_address.short_description = 'Address'
+
+    def get_inline_instances(self, request, obj=None):
+        if not obj:
+            return list()
+        return super(CustomUserAdmin, self).get_inline_instances(request, obj)
 
 class ReadAdmin(admin.ModelAdmin):
 	fieldsets = [
@@ -36,6 +59,8 @@ class EpisodeAdmin(admin.ModelAdmin):
 	list_display = ('show', 'title')
 	search_fields = ['show', 'title']
 
+admin.site.unregister(User)
+admin.site.register(User, CustomUserAdmin)
 admin.site.register(Slot, SlotAdmin)
 admin.site.register(Read, ReadAdmin)
 admin.site.register(Show, ShowAdmin)

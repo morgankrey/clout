@@ -4,6 +4,11 @@ from podcasteryapp import views
 
 urlpatterns = [
 	url(r'^$', views.index, name='index'),
+	url(r'^profile/$', views.profile, name='profile'),
+    url(r'^signup/$', views.signup, name='signup'),
+    url(r'^show/new/$', views.show_new, name='show_new'),
+    url(r'^show/(?P<show_id>\d+)/$', views.show_detail, name='show_detail'),
+    url(r'^show/(?P<show_id>\d+)/edit/$', views.show_edit, name='show_edit'),
 	url(r'^read/(?P<read_id>\d+)/$', views.read_detail, name='read_detail'),
 	url(r'^read/new$', views.read_new, name='read_new'),
 	url(r'^read/(?P<read_id>\d+)/edit/$', views.read_edit, name='read_edit'),

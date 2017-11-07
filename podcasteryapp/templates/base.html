@@ -8,8 +8,8 @@
 	<div class="page-header">
 	    <h1>
 	    	<a href="/">Podcastery.io</a>
-    		<a class="btn btn-primary pull-right" href="{% url 'read_new' %}">New Read</a>
-    		<a class="btn btn-primary pull-right" href="{% url 'slot_new' %}">New Slot</a>
+    		<a class="btn btn-secondary pull-right" href="{% url 'read_new' %}">New Read</a>
+    		<a class="btn btn-secondary pull-right" href="{% url 'slot_new' %}">New Slot</a>
 	    </h1>
 	</div>
 	<div class="content container">
@@ -21,3 +21,12 @@
 		</div>
 	</div>
 </body>
+<footer>
+	{% if user.is_authenticated %}
+		<a class="btn btn-secondary" href="{% url 'profile' %}">{{ request.user.username }}</a>
+		<a class="btn btn-secondary" href="{% url 'logout' %}">Log Out</a>
+	{% else %}
+		<a class="btn btn-secondary" href="{% url 'signup' %}">Sign Up</a>
+		<a class="btn btn-secondary" href="{% url 'login' %}">Log In</a>
+	{% endif %}
+</footer>

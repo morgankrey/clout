@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
+{% load guardian_tags %}
 
 {% block content %}
+{% get_obj_perms request.user for read as "read_perms" %}
 
 {{ read }}
-<a class="btn btn-default" href="{% url 'read_edit' read_id=read.pk %}">Edit</a>
+{% if "edit_read" in read_perms %}
+    <a class="btn btn-default" href="{% url 'read_edit' read_id=read.pk %}">Edit</a>
+{% endif %}
 
 {% endblock %}

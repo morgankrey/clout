@@ -1,9 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
+
 import datetime
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    address = models.CharField(max_length=1024, null=True, blank=True)
+    date_created = models.DateTimeField('Date created', auto_now_add=True)
+    date_updated = models.DateTimeField('Date updated', auto_now=True)
 
 class Show(models.Model):
 	title = models.CharField(max_length=256)
@@ -23,7 +33,14 @@ class Episode(models.Model):
 
 class Read(models.Model):
 	text = models.TextField(default='')
-	date_created = models.DateTimeField('Date created', default=timezone.now)
+	date_created = models.DateTimeField('Date created', auto_now_add=True)
+	date_updated = models.DateTimeField('Date updated', auto_now=True)
+
+	class Meta:
+		permissions = (
+				('view_read', "View read"),
+				('edit_read', "Edit read"),
+			)
 
 	def __str__(self):
 		return self.text
@@ -35,3 +52,11 @@ class Slot(models.Model):
 
 	def __str__(self):
 		return str(self.episode) + ', ' + str(self.location)
+
+# methods
+
+@receiver(post_save, sender=User)
+def update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    instance.profile.save()
