@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
+{% load guardian_tags %}
 
 {% block content %}
+{% get_obj_perms request.user for slot as "slot_perms" %}
 
 {{ slot }}
-<a class="btn btn-default" href="{% url 'slot_edit' slot_id=slot.pk %}">Edit</a>
+{% if "edit_slot" in read_perms %}
+	<a class="btn btn-default" href="{% url 'slot_edit' slot_id=slot.pk %}">Edit</a>
+{% endif %}
 
 {% endblock %}

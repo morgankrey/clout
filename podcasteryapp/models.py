@@ -50,6 +50,13 @@ class Slot(models.Model):
 	location = models.IntegerField(default=1)
 	read = models.ForeignKey(Read, blank=True, null=True)
 
+	class Meta:
+		permissions = (
+				('view_slot_details', "View slot details"),
+				('edit_slot', "Edit slot"),
+			)
+		unique_together = ('episode', 'location')
+
 	def __str__(self):
 		return str(self.episode) + ', ' + str(self.location)
 

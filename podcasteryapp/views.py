@@ -14,13 +14,8 @@ from podcasteryapp.models import Read, Slot, Show, Episode
 from podcasteryapp.forms import ReadForm, SlotForm, ShowForm
 
 def index(request):
-	latest_read_list = get_objects_for_user(request.user, 
-											'view_read', 
-											Read.objects.order_by('-date_created'))[:5]
-	context = {
-			'latest_read_list': latest_read_list
-		}
-	return render(request, 'index.html', context)
+	show_list = Show.objects.order_by('title')
+	return render(request, 'index.html', {'show_list':show_list})
 
 def signup(request):
 	if request.method == 'POST':
@@ -41,6 +36,12 @@ def signup(request):
 @login_required
 def profile(request):
 	return render(request, 'profile.html', {})
+
+@login_required
+def episode_detail(request, episode_id):
+	episode = get_object_or_404(Episode, pk=episode_id)
+	slot_list = Slot.objects.filter(episode=episode_id)
+	return render(request, 'episode_detail.html', {'episode': episode, 'slot_list': slot_list})
 
 @login_required
 def show_new(request):
@@ -71,7 +72,8 @@ def show_edit(request, show_id):
 @login_required
 def show_detail(request, show_id):
 	show = get_object_or_404(Show, pk=show_id)
-	return render(request, 'show_detail.html', {'show': show})
+	episode_list = Episode.objects.filter(show=show_id)
+	return render(request, 'show_detail.html', {'show': show, 'episode_list': episode_list})
 
 @permission_required_or_403('view_read')
 def read_detail(request, read_id):
@@ -118,11 +120,14 @@ def slot_new(request):
 		if form.is_valid():
 			slot = form.save(commit=False)
 			slot.save()
+			assign_perm('view_slot_details', request.user, slot)
+			assign_perm('edit_slot', request.user, slot)
 			return redirect('slot_detail', slot_id=slot.pk)
 	else:
 		form = SlotForm()
 	return render(request, 'slot_edit.html', {'form': form})
 
+@permission_required_or_403('edit_slot')
 @login_required
 def slot_edit(request, slot_id):
 	slot = get_object_or_404(Slot, pk=slot_id)

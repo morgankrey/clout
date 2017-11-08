@@ -1,21 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-	{% if latest_read_list %}
-	    {% for read in latest_read_list %}
+	{% if show_list %}
+	    {% for show in show_list %}
 	    	<div class="homepage-read">
-	    		<div class="date">
-		    		<p>created: {{ read.date_created }}</p>				    			
-	    		</div>
 				<p>
-					<a href="{% url 'read_detail' read.id %}">
-						{{read.text}}
-					</a> | 
-					{{read.slot|linebreaksbr}}
+					<a href="{% url 'show_detail' show.id %}">
+						{{show.title}}
+					</a>
 				</p>
 	    	</div>
 	    {% endfor %}
 	{% else %}
-	    <p>No reads are available.</p>
+	    <p>No shows are available.</p>
 	{% endif %}
 {% endblock %}
